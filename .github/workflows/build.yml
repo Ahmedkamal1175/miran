@@ -1,0 +1,30 @@
+name: Build Miran Windows App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Windows app
+        run: npx electron-packager . Miran --platform=win32 --arch=x64 --overwrite --out=dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Miran-Windows
+          path: dist/Miran-win32-x64/
+          retention-days: 30
