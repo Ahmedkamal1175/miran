@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مِران — تدريب العقل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F5FB; --surface:#FFFFFF; --surface2:#E9EDF8; --ink:#121A3A; --muted:#55608A; --line:#D8DEF0;
+  --primary:#2B44D6; --on-primary:#FFFFFF; --gold:#F2A900; --good:#12996B; --bad:#D6336C;
+  --stage:#161C3D; --stage-ink:#F1F3FF;
+  --font-head:'Readex Pro','IBM Plex Sans Arabic',Tahoma,'Segoe UI',sans-serif;
+  --font-body:'IBM Plex Sans Arabic',Tahoma,'Segoe UI',system-ui,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1226; --surface:#171C3A; --surface2:#20264A; --ink:#EEF0FF; --muted:#9AA3D1; --line:#2A3160;
+    --primary:#7C8CFF; --on-primary:#0E1226; --good:#2FC48D; --bad:#FF6B95; --stage:#0A0E20;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1226; --surface:#171C3A; --surface2:#20264A; --ink:#EEF0FF; --muted:#9AA3D1; --line:#2A3160;
+  --primary:#7C8CFF; --on-primary:#0E1226; --good:#2FC48D; --bad:#FF6B95; --stage:#0A0E20;
+}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:400 1rem/1.7 var(--font-body);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-head);line-height:1.35;margin:0;font-weight:600}
+h1{font-size:1.7rem} h2{font-size:1.2rem} h3{font-size:1.02rem}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:disabled{cursor:default}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.app{min-height:100%}
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:20}
+.nav .brand{display:none}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;padding:6px 2px;font-size:.75rem;color:var(--muted);border-radius:12px}
+.nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav button[aria-current="page"]{color:var(--primary);font-weight:600}
+main{padding:20px 16px 110px;max-width:1080px;margin:0 auto}
+.app.playing .nav{display:none}
+.app.playing main{padding-bottom:30px}
+@media (min-width:900px){
+  .app{display:grid;grid-template-columns:230px 1fr}
+  .app.playing{display:block}
+  .nav{position:sticky;top:0;bottom:auto;left:auto;right:auto;height:100vh;flex-direction:column;justify-content:flex-start;gap:6px;padding:24px 14px;border-top:0;border-inline-end:1px solid var(--line)}
+  .nav .brand{display:block;font:700 1.7rem var(--font-head);color:var(--primary);padding:0 12px 18px}
+  .nav button{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;font-size:1rem;padding:12px 14px}
+  .nav button[aria-current="page"]{background:var(--surface2)}
+  main{padding:32px 32px 60px}
+}
+.btn{border:0;border-radius:12px;padding:12px 22px;min-height:44px;font-weight:600;background:var(--primary);color:var(--on-primary)}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.sm{padding:6px 14px;min-height:36px;font-size:.9rem;border-radius:10px}
+.btn.danger{background:var(--bad);color:#fff}
+.sub{color:var(--muted);font-size:.95rem}
+.head{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:22px}
+.chips-row{display:flex;flex-wrap:wrap;gap:10px}
+.pill{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.92rem;display:inline-flex;gap:8px;align-items:center}
+.pill b{font-family:var(--font-head)}
+.xp{height:8px;border-radius:9px;background:var(--surface2);overflow:hidden;width:150px}
+.xp i{display:block;height:100%;background:var(--gold)}
+.split{display:grid;gap:22px}
+@media (min-width:900px){.split{grid-template-columns:1.15fr 1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px}
+.panel h2{margin-bottom:4px}
+.rail{list-style:none;margin:16px 0 20px;padding:0}
+.stop{display:grid;grid-template-columns:36px 1fr auto;gap:14px;align-items:center;padding:10px 0;position:relative}
+.stop:not(:last-child)::after{content:"";position:absolute;inset-inline-start:17px;top:50%;height:100%;width:2px;background:var(--line)}
+.stop.done:not(:last-child)::after{background:var(--good)}
+.dot{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line);background:var(--surface);font:600 .95rem var(--font-head);position:relative;z-index:1}
+.stop.done .dot{background:var(--good);border-color:var(--good);color:#fff}
+.stop.next .dot{border-color:var(--primary);color:var(--primary)}
+.stop .nm{font-weight:600}
+.stop .sk{font-size:.85rem;color:var(--muted)}
+.tag-done{font-size:.85rem;color:var(--good);font-weight:600}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.gicon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:1.6rem;background:var(--surface2)}
+.skills{display:flex;flex-wrap:wrap;gap:6px}
+.skills span{font-size:.78rem;background:var(--surface2);border-radius:999px;padding:1px 10px;color:var(--muted)}
+.meter{display:flex;gap:3px}
+.meter i{width:14px;height:6px;border-radius:3px;background:var(--surface2)}
+.meter i.on{background:var(--primary)}
+.gfoot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.tile b{display:block;font:700 1.6rem var(--font-head)}
+.tile span{color:var(--muted);font-size:.88rem}
+.act{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:320px;margin-top:12px}
+.act span{aspect-ratio:1;border-radius:6px;background:var(--surface2)}
+.act .a1{background:color-mix(in srgb,var(--primary) 35%,var(--surface2))}
+.act .a2{background:color-mix(in srgb,var(--primary) 65%,var(--surface2))}
+.act .a3{background:var(--primary)}
+.grow{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.bars{display:grid;gap:10px;margin-top:12px}
+.bar-row{display:grid;grid-template-columns:80px 1fr 36px;gap:10px;align-items:center;font-size:.92rem}
+.bar-row .track{height:10px;border-radius:9px;background:var(--surface2);overflow:hidden}
+.bar-row .track i{display:block;height:100%;background:var(--primary)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.badge{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.badge .bi{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:1.4rem;background:var(--gold);flex:none}
+.badge.locked{opacity:.55}
+.badge.locked .bi{background:var(--surface2);filter:grayscale(1)}
+.badge small{color:var(--muted);display:block;line-height:1.4}
+.field{display:grid;gap:8px;margin-bottom:22px}
+.field label,.field .lb{font-weight:600}
+.inp,.ta{width:100%;max-width:420px;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface);color:var(--ink);font:inherit}
+.ta{max-width:100%;font-family:monospace;font-size:.8rem;direction:ltr}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;width:max-content}
+.seg button{border:0;background:var(--surface);padding:8px 18px;min-height:40px}
+.seg button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);font-weight:600}
+.note{background:var(--surface2);border-radius:14px;padding:14px 16px;color:var(--muted);font-size:.92rem;max-width:640px}
+#toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;z-index:50;font-size:.92rem;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.show{opacity:1}
+.rd-ring{fill:none;stroke:var(--line)}
+.rd-axis{stroke:var(--line)}
+.rd-area{fill:color-mix(in srgb,var(--primary) 24%,transparent);stroke:var(--primary);stroke-width:2.5;stroke-linejoin:round}
+.rd-dot{fill:var(--primary)}
+.rd-label{fill:var(--ink);font:500 13px var(--font-body)}
+.rd-val{fill:var(--muted);font:12px var(--font-head)}
+.ln-grid{stroke:var(--line)}
+.ln-path{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.ln-dot{fill:var(--surface);stroke:var(--primary);stroke-width:2}
+.ln-t{fill:var(--muted);font:11px var(--font-head)}
+svg{max-width:100%;height:auto;display:block}
+.radar-wrap{max-width:340px;margin:8px auto 0}
+/* ---- game stage ---- */
+.stage{background:var(--stage);color:var(--stage-ink);border-radius:26px;padding:18px;max-width:720px;margin:0 auto;min-height:520px;display:flex;flex-direction:column;gap:14px}
+.stage-top{display:flex;align-items:center;gap:10px}
+.stage-top .title{font:600 1.05rem var(--font-head);flex:1}
+.stage-top .lvl{font-size:.85rem;color:#B9C0E6}
+.pbar{height:6px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden}
+.pbar>i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
+.body{flex:1;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.hint{color:#B9C0E6;text-align:center;font-size:.95rem}
+.sbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:var(--stage-ink);border-radius:14px;padding:12px 16px;font-weight:600;min-height:50px}
+.sbtn:hover:not(:disabled){background:rgba(255,255,255,.18)}
+.sbtn.sm{min-height:36px;padding:4px 14px;font-size:.9rem}
+.sbtn.main{background:var(--gold);color:#1a1300;border-color:var(--gold)}
+.intro,.result{text-align:center;align-items:center;justify-content:center;display:flex;flex-direction:column;gap:14px;flex:1}
+.intro .gicon,.result .gicon{background:rgba(255,255,255,.1);width:72px;height:72px;font-size:2.4rem;border-radius:20px}
+.intro p{max-width:460px;color:#C9CFEE}
+.score{font:700 5rem/1 var(--font-head)}
+.stars{font-size:2rem;letter-spacing:6px;color:var(--gold)}
+.gain{color:#C9CFEE}
+.newach{background:rgba(242,169,0,.16);border:1px solid var(--gold);border-radius:14px;padding:8px 16px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.counter{text-align:center;color:#C9CFEE}
+.schulte{display:grid;grid-auto-rows:1fr;gap:6px;width:min(100%,460px);margin:0 auto;aspect-ratio:1}
+.cell{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:12px;color:var(--stage-ink);font:600 1.25rem var(--font-head);min-height:44px;padding:0}
+.cell.done{opacity:.22}
+.cell.wrong{background:var(--bad)}
+.target{text-align:center;font:700 1.4rem var(--font-head);color:var(--gold)}
+.hanoi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.peg{position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;border:1.5px dashed rgba(255,255,255,.22);border-radius:14px;background:rgba(255,255,255,.04);padding:8px 4px;color:inherit}
+.peg.goal{border-color:var(--gold);background:rgba(242,169,0,.09)}
+.peg.sel{border-style:solid;border-color:#fff}
+.rod{position:absolute;bottom:0;width:8px;height:90%;background:rgba(255,255,255,.22);border-radius:6px;left:50%;transform:translateX(-50%)}
+.stack{position:relative;z-index:1;width:100%;display:flex;flex-direction:column-reverse;align-items:center;gap:3px}
+.disc{height:20px;border-radius:10px;display:block;transition:transform .12s}
+.disc.lift{transform:translateY(-16px);box-shadow:0 0 0 2px #fff}
+.sgrid{display:grid;grid-auto-rows:1fr;gap:8px;width:min(100%,380px);margin:0 auto;aspect-ratio:1}
+.scell{background:rgba(255,255,255,.09);border:0;border-radius:14px;min-height:40px}
+.scell.lit{background:var(--gold)}
+.scell.ok{background:var(--good)}
+.scell.no{background:var(--bad)}
+.periph{position:relative;height:200px;background:rgba(255,255,255,.05);border-radius:16px}
+.fix{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:600 2.2rem var(--font-head);color:#fff}
+.pnum{position:absolute;top:50%;transform:translate(-50%,-50%);font:700 2rem var(--font-head);visibility:hidden}
+.pnum.show{visibility:visible}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.word{font:700 clamp(3rem,12vw,5rem) var(--font-head);text-align:center;min-height:110px;line-height:1.6}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.tbar{height:6px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden;min-height:6px}
+.tbar>i{display:block;height:100%;background:var(--gold);animation:shrink linear forwards}
+@keyframes shrink{from{width:100%}to{width:0}}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.chip{padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.1);border:1.5px solid transparent;font-weight:500;color:var(--stage-ink)}
+.chip.static{font-size:1.15rem}
+.chip.sel{border-color:var(--gold);background:rgba(242,169,0,.2)}
+.chip.hit{background:var(--good);color:#fff}
+.chip.miss{border-color:var(--good);border-style:dashed}
+.chip.fa{background:var(--bad);color:#fff}
+.speaker{font-size:4rem;text-align:center;line-height:1.2}
+.speaker.on{animation:pulse .5s ease-in-out infinite alternate}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.speaker.on{animation:none}.pbar>i,.disc{transition:none}}
+</style>
+</head>
+<body>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="app" class="app"></div>
+<noscript>يحتاج هذا التطبيق إلى تفعيل JavaScript.</noscript>
+<script>
+(function(){
+'use strict';
+
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+function h(tag,attrs,...kids){
+  const e=document.createElement(tag);
+  if(attrs) for(const k in attrs){
+    const v=attrs[k];
+    if(v==null||v===false) continue;
+    if(k==='class') e.className=v;
+    else if(k==='style'&&typeof v==='object') Object.assign(e.style,v);
+    else if(k.slice(0,2)==='on') e.addEventListener(k.slice(2).toLowerCase(),v);
+    else e.setAttribute(k,v===true?'':v);
+  }
+  kids.flat(Infinity).forEach(c=>{ if(c==null||c===false) return; e.append(c.nodeType?c:document.createTextNode(String(c))); });
+  return e;
+}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const rnd=n=>Math.floor(Math.random()*n);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+const dayStr=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const addDays=(s,n)=>{const p=s.split('-').map(Number);return dayStr(new Date(p[0],p[1]-1,p[2]+n));};
+function hashStr(s){let x=2166136261;for(let i=0;i<s.length;i++){x^=s.charCodeAt(i);x=Math.imul(x,16777619);}return x>>>0;}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+let toastT=null;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);}
+
+/* ---------- storage ---------- */
+const KEY='miran.v1'; const memStore={};
+function fresh(){return {name:'',theme:'auto',sound:true,levels:{},perf:{},best:{},plays:{},history:[],xp:0,streak:0,bestStreak:0,lastDay:null,ach:{},plan:null,planDone:0,minutes:0};}
+function load(){
+  let raw=null;
+  try{raw=localStorage.getItem(KEY);}catch(e){raw=memStore[KEY]||null;}
+  if(!raw) return fresh();
+  try{const o=JSON.parse(raw);return Object.assign(fresh(),o);}catch(e){return fresh();}
+}
+function save(){
+  const s=JSON.stringify(S);
+  try{localStorage.setItem(KEY,s);}catch(e){memStore[KEY]=s;}
+}
+let S=load();
+
+/* ---------- audio ---------- */
+let AC=null;
+function ac(){
+  if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(C){try{AC=new C();}catch(e){AC=null;}}}
+  if(AC&&AC.state==='suspended'){try{AC.resume();}catch(e){}}
+  return AC;
+}
+function tone(freq,dur,type,vol){
+  const a=ac(); if(!a) return;
+  dur=dur||0.25; type=type||'sine'; vol=vol||0.18;
+  const o=a.createOscillator(),g=a.createGain(); o.type=type; o.frequency.value=freq;
+  const t=a.currentTime; g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(vol,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.03);
+}
+const sfx={
+  ok(){if(S.sound){tone(660,.12);setTimeout(()=>tone(880,.16),90);}},
+  bad(){if(S.sound)tone(180,.25,'triangle');},
+  tap(){if(S.sound)tone(520,.07,'sine',.1);}
+};
+
+/* ---------- constants ---------- */
+const SK=['memory','attention','thinking','perception','speed'];
+const SKN={memory:'الذاكرة',attention:'الانتباه',thinking:'التفكير',perception:'الإدراك',speed:'السرعة'};
+const BANK=Array.from(new Set(["بيت","شجرة","قلم","كتاب","سيارة","نافذة","قمر","بحر","جبل","طائر","ساعة","مفتاح","كرسي","تفاحة","خبز","حليب","مطر","نهر","حديقة","قطار","طائرة","سفينة","مدرسة","مطبخ","سرير","مرآة","حقيبة","هاتف","قهوة","شاي","وردة","سحابة","نجمة","شمس","رمل","جسر","باب","سقف","جدار","طاولة","صحن","ملعقة","سكين","كوب","قبعة","حذاء","قميص","خاتم","دراجة","حصان","أسد","قطة","سمكة","فراشة","نحلة","عنب","برتقال","موز","بطيخ","زيتون","ليمون","طماطم","بصل","ثوم","جزر","ملح","سكر","عسل","نار","ثلج","ريح","صخرة","غابة","صحراء","جزيرة","مدينة","سوق","مستشفى","مكتبة","مسرح","متحف","ملعب","برج","قلعة","خيمة","قارب","مظلة","شمعة","مصباح","ميزان","بوصلة","خريطة","رسالة"]));
+const TITLES=['مبتدئ','فضولي','منتبه','متقد','بارع','خبير','حكيم','أسطورة'];
+
+/* ---------- games ---------- */
+async function gSchulte(ctx){
+  const L=ctx.level, n=[3,3,4,4,5,5,5,6,6,6][L-1], cells=n*n, rounds=3;
+  let total=0;
+  for(let r=0;r<rounds;r++){
+    ctx.progress(r,rounds);
+    const desc=L>=7&&r%2===1;
+    const nums=shuffle(Array.from({length:cells},(_,i)=>i+1));
+    let next=desc?cells:1;
+    const secs=await new Promise(resolve=>{
+      let wrong=0;
+      const info=h('div',{class:'hint'},desc?'هذه الجولة تنازلية: من الأكبر إلى الأصغر':'اضغط على الأرقام بالترتيب من 1 إلى '+cells);
+      const tgt=h('div',{class:'target'});
+      const grid=h('div',{class:'schulte',dir:'ltr',style:{gridTemplateColumns:'repeat('+n+',1fr)'}});
+      const upd=()=>{tgt.textContent='التالي: '+next;};
+      nums.forEach(v=>{
+        const b=h('button',{class:'cell',type:'button'},String(v));
+        if(L>=5){b.style.fontSize=(0.9+Math.random()*1.1)+'rem';b.style.transform='rotate('+Math.round((Math.random()-0.5)*36)+'deg)';}
+        b.addEventListener('click',()=>{
+          if(v===next){
+            b.classList.add('done');b.disabled=true;sfx.tap();
+            next+=desc?-1:1;
+            if(next<1||next>cells){resolve((performance.now()-t0)/1000+wrong);}else upd();
+          }else{wrong++;b.classList.add('wrong');setTimeout(()=>b.classList.remove('wrong'),250);sfx.bad();}
+        });
+        grid.append(b);
+      });
+      ctx.body.replaceChildren(info,tgt,grid); upd();
+      const t0=performance.now();
+    });
+    const par=cells*1.4;
+    total+=clamp(100-(secs-par)/par*100,0,100);
+  }
+  return {score:Math.round(total/rounds)};
+}
+
+function gHanoi(ctx){
+  const L=ctx.level, nd=[3,3,4,4,5,5,6,6,7,7][L-1];
+  const goal=Math.random()<.5?1:2;
+  const pegs=[Array.from({length:nd},(_,i)=>nd-i),[],[]];
+  let moves=0, sel=-1;
+  const optimal=Math.pow(2,nd)-1;
+  return new Promise(resolve=>{
+    const info=h('div',{class:'hint'},'انقل كل الأقراص إلى البرج المضيء بأقل عدد من النقلات. لا يجوز وضع قرص كبير فوق قرص أصغر.');
+    const counter=h('div',{class:'counter'});
+    const board=h('div',{class:'hanoi',dir:'ltr'});
+    function draw(){
+      board.replaceChildren(...pegs.map((p,i)=>{
+        const col=h('button',{class:'peg'+(i===goal?' goal':'')+(i===sel?' sel':''),type:'button','aria-label':'البرج '+(i+1)+(i===goal?' (الهدف)':''),style:{height:(nd*23+80)+'px'}},
+          h('span',{class:'rod'}),
+          h('div',{class:'stack'},p.map((d,k)=>h('span',{class:'disc'+(i===sel&&k===p.length-1?' lift':''),style:{width:(30+d*(62/nd))+'%',background:'hsl('+Math.round((d*300/nd+200)%360)+',70%,58%)'}}))));
+        col.addEventListener('click',()=>tap(i));
+        return col;
+      }));
+      counter.textContent='النقلات: '+moves+' (الحد الأدنى الممكن: '+optimal+')';
+      ctx.progress(pegs[goal].length,nd);
+    }
+    function tap(i){
+      if(ctx.dead) return;
+      if(sel<0){ if(pegs[i].length) sel=i; }
+      else if(sel===i){ sel=-1; }
+      else{
+        const from=pegs[sel], to=pegs[i], d=from[from.length-1];
+        if(!to.length||to[to.length-1]>d){to.push(from.pop());moves++;sel=-1;sfx.tap();}
+        else{sfx.bad();sel=-1;}
+      }
+      draw();
+      if(pegs[goal].length===nd){
+        ctx.wait(500).then(()=>resolve({score:Math.round(clamp(optimal/moves*100,0,100)),note:'أنجزتها في '+moves+' نقلة، والأمثل '+optimal}));
+      }
+    }
+    ctx.body.replaceChildren(info,board,counter); draw();
+  });
+}
+
+async function gSpatial(ctx){
+  const L=ctx.level, n=L<=3?3:(L<=7?4:5), cells=n*n, trials=6;
+  const base=2+Math.ceil(L/2), flash=Math.max(320,720-40*L);
+  const grid=h('div',{class:'sgrid',dir:'ltr',style:{gridTemplateColumns:'repeat('+n+',1fr)'}});
+  const btns=Array.from({length:cells},(_,i)=>h('button',{class:'scell',type:'button','aria-label':'مربع '+(i+1),disabled:true}));
+  btns.forEach(b=>grid.append(b));
+  const msg=h('div',{class:'hint'});
+  ctx.body.replaceChildren(msg,grid);
+  const lock=v=>btns.forEach(b=>{b.disabled=v;});
+  let total=0;
+  for(let t=0;t<trials;t++){
+    ctx.progress(t,trials);
+    const len=Math.min(cells-1,base+Math.floor(t/2));
+    const seq=[]; while(seq.length<len){const c=rnd(cells); if(seq[seq.length-1]!==c) seq.push(c);}
+    const rev=L>=8&&t>=3;
+    lock(true); msg.textContent='تابع المربعات المضيئة بتركيز';
+    await ctx.wait(700);
+    for(const c of seq){btns[c].classList.add('lit');await ctx.wait(flash);btns[c].classList.remove('lit');await ctx.wait(180);}
+    msg.textContent=rev?'أعِد الضغط بالترتيب العكسي':'أعِد الضغط بنفس الترتيب';
+    const target=rev?seq.slice().reverse():seq;
+    const good=await new Promise(res=>{
+      let i=0; lock(false);
+      btns.forEach((b,k)=>{b.onclick=()=>{
+        if(k===target[i]){
+          b.classList.add('ok');setTimeout(()=>b.classList.remove('ok'),200);sfx.tap();i++;
+          if(i===target.length){lock(true);res(i);}
+        }else{
+          b.classList.add('no');setTimeout(()=>b.classList.remove('no'),300);sfx.bad();lock(true);res(i);
+        }
+      };});
+    });
+    total+=good/len;
+    await ctx.wait(500);
+  }
+  return {score:Math.round(total/trials*100)};
+}
+
+async function gPeripheral(ctx){
+  const L=ctx.level, trials=16;
+  const spread=Math.min(38,10+L*2.9), dur=Math.max(110,520-38*L);
+  const stage=h('div',{class:'periph',dir:'ltr'});
+  const fix=h('div',{class:'fix'},'+');
+  const ln=h('div',{class:'pnum'}), rn=h('div',{class:'pnum'});
+  ln.style.left=(50-spread)+'%'; rn.style.left=(50+spread)+'%';
+  stage.append(fix,ln,rn);
+  const msg=h('div',{class:'hint'},'ثبّت نظرك على علامة + طوال الوقت. يمكنك استخدام مفتاحي السهمين.');
+  let pending=null;
+  const answer=v=>{if(pending){const p=pending;pending=null;p(v);}};
+  const bl=h('button',{class:'sbtn',type:'button',onclick:()=>answer('L')},'الأكبر على اليسار');
+  const br=h('button',{class:'sbtn',type:'button',onclick:()=>answer('R')},'الأكبر على اليمين');
+  const row=h('div',{class:'choices',dir:'ltr'},bl,br);
+  ctx.onKey(e=>{if(e.key==='ArrowLeft')answer('L');else if(e.key==='ArrowRight')answer('R');});
+  ctx.body.replaceChildren(msg,stage,row);
+  let correct=0;
+  for(let t=0;t<trials;t++){
+    ctx.progress(t,trials);
+    await ctx.wait(700+rnd(500));
+    let a,b; do{a=10+rnd(90);b=10+rnd(90);}while(Math.abs(a-b)<5);
+    ln.textContent=a; rn.textContent=b;
+    ln.classList.add('show'); rn.classList.add('show');
+    await ctx.wait(dur);
+    ln.classList.remove('show'); rn.classList.remove('show');
+    const ans=await new Promise(r=>{pending=r;});
+    const ok=(a>b)===(ans==='L');
+    if(ok){correct++;sfx.ok();fix.style.color='#2FC48D';}else{sfx.bad();fix.style.color='#FF6B95';}
+    await ctx.wait(250); fix.style.color='#fff';
+  }
+  const acc=correct/trials;
+  return {score:Math.round(clamp((acc-0.5)/0.5*100,0,100)),note:'أجبت بشكل صحيح '+correct+' من '+trials};
+}
+
+async function gStroop(ctx){
+  const L=ctx.level, trials=20;
+  const all=[{n:'أحمر',c:'#EF4B5F'},{n:'أزرق',c:'#4C8DFF'},{n:'أخضر',c:'#2FC48D'},{n:'أصفر',c:'#F5C518'},{n:'بنفسجي',c:'#B07CFF'}];
+  const k=L<=3?3:(L<=6?4:5), cols=all.slice(0,k);
+  const limit=Math.max(1100,3600-260*L), congP=Math.max(.1,.5-.05*L);
+  let pending=null,tid=null;
+  const answer=v=>{if(!pending)return;clearTimeout(tid);const p=pending;pending=null;p(v);};
+  const word=h('div',{class:'word'}), bar=h('div',{class:'tbar'});
+  const opts=h('div',{class:'opts'},cols.map((c,i)=>h('button',{class:'sbtn',type:'button',onclick:()=>answer(i)},c.n)));
+  ctx.onKey(e=>{const i=parseInt(e.key,10)-1;if(i>=0&&i<k)answer(i);});
+  ctx.body.replaceChildren(h('div',{class:'hint'},'اضغط على اسم لون الحبر، وليس على معنى الكلمة'),word,bar,opts);
+  let correct=0;
+  for(let t=0;t<trials;t++){
+    ctx.progress(t,trials);
+    const ink=rnd(k); const w=Math.random()<congP?ink:(ink+1+rnd(k-1))%k;
+    word.textContent=cols[w].n; word.style.color=cols[ink].c;
+    bar.replaceChildren(h('i',{style:{animationDuration:limit+'ms'}}));
+    const ans=await new Promise(r=>{pending=r;tid=setTimeout(()=>answer(-1),limit);ctx.timers.add(tid);});
+    bar.replaceChildren();
+    if(ans===ink){correct++;sfx.tap();}else sfx.bad();
+    word.textContent='';
+    await ctx.wait(260);
+  }
+  return {score:Math.round(correct/trials*100),note:'أجبت بشكل صحيح '+correct+' من '+trials};
+}
+
+async function gWords(ctx){
+  const L=ctx.level, N=Math.min(12,3+L), rounds=2;
+  let sum=0, hitsAll=0;
+  for(let r=0;r<rounds;r++){
+    ctx.progress(r,rounds);
+    const pool=shuffle(BANK), seen=pool.slice(0,N), lure=pool.slice(N,2*N);
+    const ms=N*Math.max(700,1700-90*L);
+    const bar=h('div',{class:'tbar'},h('i',{style:{animationDuration:ms+'ms'}}));
+    ctx.body.replaceChildren(
+      h('div',{class:'hint'},'احفظ هذه الكلمات. اربطها بقصة قصيرة أو بمشهد تتخيّله.'),
+      h('div',{class:'chips'},seen.map(w=>h('span',{class:'chip static'},w))),
+      bar);
+    await ctx.wait(ms);
+    const all=shuffle(seen.concat(lure)), sel=new Set();
+    const cnt=h('div',{class:'hint'});
+    const upd=()=>{cnt.textContent='اختر الكلمات التي رأيتَها ('+N+' كلمات بين '+all.length+'). المختار: '+sel.size;};
+    const chips=all.map(w=>{
+      const c=h('button',{class:'chip',type:'button','aria-pressed':'false'},w);
+      c.addEventListener('click',()=>{
+        if(sel.has(w)){sel.delete(w);c.classList.remove('sel');c.setAttribute('aria-pressed','false');}
+        else{sel.add(w);c.classList.add('sel');c.setAttribute('aria-pressed','true');}
+        upd();
+      });
+      return c;
+    });
+    const btn=h('button',{class:'sbtn main',type:'button'},'تحقّق');
+    ctx.body.replaceChildren(cnt,h('div',{class:'chips'},chips),h('div',{class:'actions'},btn)); upd();
+    await new Promise(res=>{btn.onclick=()=>res();});
+    let hits=0,fa=0;
+    chips.forEach((c,i)=>{
+      const w=all[i], isSeen=seen.includes(w); c.disabled=true; c.classList.remove('sel');
+      if(isSeen&&sel.has(w)){c.classList.add('hit');hits++;}
+      else if(isSeen){c.classList.add('miss');}
+      else if(sel.has(w)){c.classList.add('fa');fa++;}
+    });
+    cnt.textContent='أصبتَ '+hits+' من '+N+(fa?' وأخطأت في '+fa:'');
+    hitsAll+=hits;
+    sum+=clamp((hits-fa)/N,0,1);
+    if(hits-fa>=N*0.8) sfx.ok(); else sfx.bad();
+    await ctx.wait(2400);
+  }
+  return {score:Math.round(sum/rounds*100),note:'تذكّرت '+hitsAll+' كلمة من '+(N*rounds)};
+}
+
+async function gAudio(ctx){
+  const L=ctx.level, trials=8, k=3+Math.floor(L/2), dur=Math.max(.24,.44-.02*L);
+  const scale=[262,294,330,392,440,523,587,659,784];
+  const spk=h('div',{class:'speaker','aria-hidden':'true'},'🔊');
+  const msg=h('div',{class:'hint'});
+  let pending=null;
+  const answer=v=>{if(pending){const p=pending;pending=null;p(v);}};
+  const bSame=h('button',{class:'sbtn',type:'button',onclick:()=>answer(true)},'متطابقان');
+  const bDiff=h('button',{class:'sbtn',type:'button',onclick:()=>answer(false)},'مختلفان');
+  const row=h('div',{class:'choices'},bSame,bDiff); row.style.visibility='hidden';
+  ctx.body.replaceChildren(spk,msg,row);
+  const playSeq=async seq=>{
+    spk.classList.add('on');
+    for(const i of seq){tone(scale[i],dur,'sine',.28);await ctx.wait(dur*1000+110);}
+    spk.classList.remove('on');
+  };
+  let correct=0;
+  for(let t=0;t<trials;t++){
+    ctx.progress(t,trials);
+    const a=Array.from({length:k},()=>rnd(scale.length));
+    const same=Math.random()<.5, b=a.slice();
+    if(!same){const i=rnd(k);let v;do{v=rnd(scale.length);}while(v===b[i]);b[i]=v;}
+    row.style.visibility='hidden';
+    msg.textContent='المقطع الأول'; await ctx.wait(500); await playSeq(a);
+    msg.textContent='...'; await ctx.wait(900);
+    msg.textContent='المقطع الثاني'; await playSeq(b);
+    msg.textContent='هل المقطعان متطابقان؟'; row.style.visibility='visible';
+    const ans=await new Promise(r=>{pending=r;});
+    row.style.visibility='hidden';
+    if(ans===same){correct++;sfx.ok();msg.textContent='صحيح';}
+    else{sfx.bad();msg.textContent='المقطعان كانا '+(same?'متطابقين':'مختلفين');}
+    await ctx.wait(800);
+  }
+  const acc=correct/trials;
+  return {score:Math.round(clamp((acc-0.5)/0.5*100,0,100)),note:'أجبت بشكل صحيح '+correct+' من '+trials};
+}
+
+const GAMES=[
+  {id:'schulte',name:'جدول الأرقام',icon:'🔢',skills:['attention','speed'],fn:gSchulte,
+   desc:'اعثر على الأرقام بالترتيب بأسرع ما يمكن.',
+   how:'اضغط على الأرقام تصاعدياً بدءاً من 1. في المستويات العليا تتغير أحجام الأرقام واتجاه العد.'},
+  {id:'hanoi',name:'الأبراج',icon:'🗼',skills:['thinking'],fn:gHanoi,
+   desc:'خطّط للنقلات في ذهنك قبل أن تنفّذها.',
+   how:'اضغط على برج لتختار قرصه العلوي، ثم اضغط على برج آخر لتضعه. الهدف هو البرج المضيء.'},
+  {id:'spatial',name:'ذاكرة المواقع',icon:'🧩',skills:['memory'],fn:gSpatial,
+   desc:'تذكّر تسلسل المربعات المضيئة وأعِده.',
+   how:'شاهد المربعات وهي تضيء، ثم اضغط عليها بالترتيب نفسه. في المستويات العليا يكون الترتيب عكسياً.'},
+  {id:'periph',name:'الرؤية المحيطية',icon:'👁️',skills:['perception','speed'],fn:gPeripheral,
+   desc:'اكتشف الرقم الأكبر بطرف عينك.',
+   how:'ثبّت نظرك على علامة +. سيظهر رقمان على الجانبين لحظة قصيرة، فاختر الجهة التي فيها الرقم الأكبر.'},
+  {id:'stroop',name:'ألوان وكلمات',icon:'🎨',skills:['attention','thinking'],fn:gStroop,
+   desc:'اختر لون الحبر، لا معنى الكلمة.',
+   how:'ستظهر كلمة اسم لون مكتوبة بلون مختلف. اضغط على اسم اللون الذي كُتبت به الكلمة قبل انتهاء الوقت.'},
+  {id:'words',name:'حفظ الكلمات',icon:'📝',skills:['memory'],fn:gWords,
+   desc:'احفظ قائمة كلمات ثم ميّزها بين كلمات مشتِّتة.',
+   how:'تظهر الكلمات لبضع ثوانٍ، وبعدها تختار الكلمات التي رأيتَها من بين كلمات جديدة. جرّب ربطها بقصة.'},
+  {id:'audio',name:'الذاكرة السمعية',icon:'🎧',skills:['memory','perception'],fn:gAudio,
+   desc:'قارن بين مقطعين صوتيين قصيرين.',
+   how:'ستسمع مقطعاً من نغمات ثم مقطعاً ثانياً. أخبرنا هل هما متطابقان أم أن نغمة واحدة تغيّرت.',
+   extra:'تحتاج هذه اللعبة إلى تشغيل الصوت أو وضع السماعات.'}
+];
+const game=id=>GAMES.find(g=>g.id===id);
+
+/* ---------- progress logic ---------- */
+function playerLevel(){return Math.floor(Math.sqrt(S.xp/60))+1;}
+function xpBar(){const l=playerLevel(),lo=60*(l-1)*(l-1),hi=60*l*l;return clamp((S.xp-lo)/(hi-lo),0,1);}
+function skills(s){
+  const out={};
+  SK.forEach(k=>{
+    const v=GAMES.filter(g=>g.skills.includes(k)&&s.perf[g.id]!=null).map(g=>s.perf[g.id]);
+    out[k]=v.length?v.reduce((a,b)=>a+b,0)/v.length:null;
+  });
+  return out;
+}
+const doneToday=id=>S.history.some(x=>x.day===dayStr()&&x.id===id);
+function todayBest(id){return Math.max(0,...S.history.filter(x=>x.day===dayStr()&&x.id===id).map(x=>x.score));}
+function curStreak(){const t=dayStr();return (S.lastDay===t||S.lastDay===addDays(t,-1))?S.streak:0;}
+function ensurePlan(){
+  const today=dayStr();
+  if(S.plan&&S.plan.day===today) return;
+  const rng=mulberry(hashStr(today));
+  const ids=GAMES.map(g=>({id:g.id,p:(S.perf[g.id]==null?-20:S.perf[g.id])+rng()*30})).sort((a,b)=>a.p-b.p).slice(0,5).map(x=>x.id);
+  S.plan={day:today,ids:ids,rewarded:false};
+  save();
+}
+const ACH=[
+  {id:'first',t:'الخطوة الأولى',d:'أكمل أول لعبة',e:'🌱',ok:s=>s.history.length>=1},
+  {id:'ten',t:'عشر جلسات',d:'أكمل 10 ألعاب',e:'🔟',ok:s=>Object.values(s.plays).reduce((a,b)=>a+b,0)>=10},
+  {id:'fifty',t:'مثابر',d:'أكمل 50 لعبة',e:'💪',ok:s=>Object.values(s.plays).reduce((a,b)=>a+b,0)>=50},
+  {id:'plan',t:'يوم مكتمل',d:'أنهِ خطة اليوم كاملة',e:'✅',ok:s=>(s.planDone||0)>=1},
+  {id:'s3',t:'ثلاثة أيام متتالية',d:'تدرّب 3 أيام على التوالي',e:'🔥',ok:s=>s.bestStreak>=3},
+  {id:'s7',t:'أسبوع كامل',d:'تدرّب 7 أيام على التوالي',e:'📅',ok:s=>s.bestStreak>=7},
+  {id:'s30',t:'شهر من المثابرة',d:'تدرّب 30 يوماً على التوالي',e:'🏔️',ok:s=>s.bestStreak>=30},
+  {id:'perfect',t:'علامة كاملة',d:'احصل على 100 في أي لعبة',e:'💯',ok:s=>s.history.some(x=>x.score>=100)},
+  {id:'lv5',t:'صاعد',d:'بلوغ المستوى 5 في أي لعبة',e:'📈',ok:s=>Object.values(s.levels).some(l=>l>=5)},
+  {id:'lv10',t:'قمة الصعوبة',d:'بلوغ المستوى 10 في أي لعبة',e:'🚀',ok:s=>Object.values(s.levels).some(l=>l>=10)},
+  {id:'all',t:'جرّبت كل شيء',d:'العب كل الألعاب السبع مرة واحدة على الأقل',e:'🧭',ok:s=>GAMES.every(g=>(s.plays[g.id]||0)>0)},
+  {id:'balanced',t:'عقل متوازن',d:'اجمع 60 أو أكثر في المهارات الخمس',e:'⚖️',ok:s=>{const k=skills(s);return SK.every(x=>(k[x]||0)>=60);}}
+];
+function record(id,score,sec){
+  const today=dayStr(), level=S.levels[id]||1;
+  let nl=level; if(score>=80) nl=Math.min(10,level+1); else if(score<40) nl=Math.max(1,level-1);
+  const xp=Math.round(score*0.4+level*4), before=playerLevel();
+  S.xp+=xp; S.levels[id]=nl; S.plays[id]=(S.plays[id]||0)+1; S.best[id]=Math.max(S.best[id]||0,score);
+  S.perf[id]=S.perf[id]==null?score:Math.round(S.perf[id]*0.7+score*0.3);
+  S.history.push({t:Date.now(),day:today,id:id,level:level,score:score,sec:sec});
+  if(S.history.length>800) S.history=S.history.slice(-800);
+  S.minutes=(S.minutes||0)+sec/60;
+  if(S.lastDay!==today){S.streak=(S.lastDay===addDays(today,-1))?S.streak+1:1;S.lastDay=today;}
+  S.bestStreak=Math.max(S.bestStreak||0,S.streak);
+  ensurePlan();
+  let planDone=false;
+  if(S.plan&&!S.plan.rewarded&&S.plan.ids.every(doneToday)){S.plan.rewarded=true;S.xp+=50;S.planDone=(S.planDone||0)+1;planDone=true;}
+  const newAch=[];
+  ACH.forEach(a=>{if(!S.ach[a.id]&&a.ok(S)){S.ach[a.id]=today;newAch.push(a);}});
+  save();
+  return {level:level,nl:nl,xp:xp,planDone:planDone,newAch:newAch,lvlUp:playerLevel()>before};
+}
+
+/* ---------- charts ---------- */
+function radar(vals){
+  const cx=150,cy=132,R=88;
+  const pt=(i,r)=>{const a=(-90+i*72)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];};
+  const f=v=>v.toFixed(1);
+  let s='<svg viewBox="0 0 300 268" style="direction:ltr" role="img" aria-label="مخطط قدراتك الخمس">';
+  [25,50,75,100].forEach(p=>{s+='<polygon class="rd-ring" points="'+SK.map((_,i)=>pt(i,R*p/100).map(f).join(',')).join(' ')+'"/>';});
+  SK.forEach((_,i)=>{const q=pt(i,R);s+='<line class="rd-axis" x1="'+cx+'" y1="'+cy+'" x2="'+f(q[0])+'" y2="'+f(q[1])+'"/>';});
+  const pts=SK.map((k,i)=>pt(i,R*Math.max(3,vals[k]||0)/100));
+  s+='<polygon class="rd-area" points="'+pts.map(q=>q.map(f).join(',')).join(' ')+'"/>';
+  pts.forEach(q=>{s+='<circle class="rd-dot" cx="'+f(q[0])+'" cy="'+f(q[1])+'" r="3.5"/>';});
+  SK.forEach((k,i)=>{
+    const q=pt(i,R+26);
+    s+='<text class="rd-label" x="'+f(q[0])+'" y="'+f(q[1])+'" text-anchor="middle">'+SKN[k]+'</text>';
+    s+='<text class="rd-val" x="'+f(q[0])+'" y="'+f(q[1]+15)+'" text-anchor="middle">'+(vals[k]==null?'—':Math.round(vals[k]))+'</text>';
+  });
+  return s+'</svg>';
+}
+function lineChart(pts){
+  const W=560,H=200,pl=30,pr=10,pt=12,pb=26,n=pts.length;
+  const x=i=>pl+i*(W-pl-pr)/(n-1), y=v=>pt+(100-v)/100*(H-pt-pb);
+  let s='<svg viewBox="0 0 '+W+' '+H+'" style="direction:ltr" role="img" aria-label="متوسط نتائجك اليومية خلال آخر 14 يوماً">';
+  [0,50,100].forEach(g=>{s+='<line class="ln-grid" x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(g)+'" y2="'+y(g)+'"/><text class="ln-t" x="'+(pl-6)+'" y="'+(y(g)+4)+'" text-anchor="end">'+g+'</text>';});
+  let d='',open=false;
+  pts.forEach((p,i)=>{if(p.v==null){open=false;return;}d+=(open?'L':'M')+x(i).toFixed(1)+','+y(p.v).toFixed(1)+' ';open=true;});
+  if(d) s+='<path class="ln-path" d="'+d+'"/>';
+  pts.forEach((p,i)=>{
+    if(p.v!=null) s+='<circle class="ln-dot" cx="'+x(i).toFixed(1)+'" cy="'+y(p.v).toFixed(1)+'" r="4"/>';
+    if(i%2===0||i===n-1) s+='<text class="ln-t" x="'+x(i).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+p.l+'</text>';
+  });
+  return s+'</svg>';
+}
+
+/* ---------- ui state ---------- */
+const root=$('#app');
+const ui={tab:'home',mode:null,ctx:null};
+const ICON={
+  home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  games:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  progress:'<path d="M5 20V11M12 20V4M19 20v-6"/>',
+  ach:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/>',
+  settings:'<path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>'
+};
+const TABS=[['home','الرئيسية'],['games','الألعاب'],['progress','التقدم'],['ach','الإنجازات'],['settings','الإعدادات']];
+function abortRun(){if(ui.ctx){ui.ctx.stop();ui.ctx=null;}}
+function applyTheme(){
+  const r=document.documentElement;
+  if(S.theme==='auto'){r.removeAttribute('data-theme');}else r.setAttribute('data-theme',S.theme);
+}
+function navEl(){
+  const n=h('nav',{class:'nav','aria-label':'التنقل الرئيسي'},h('div',{class:'brand'},'مِران'));
+  TABS.forEach(t=>{
+    const b=h('button',{type:'button',onclick:()=>{ui.tab=t[0];render();window.scrollTo(0,0);}});
+    b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+ICON[t[0]==='settings'?'settings':t[0]]+'</svg>';
+    b.append(h('span',null,t[1]));
+    if(ui.tab===t[0]) b.setAttribute('aria-current','page');
+    n.append(b);
+  });
+  return n;
+}
+function render(){
+  abortRun();
+  root.className='app'+(ui.mode?' playing':'');
+  let content;
+  if(ui.mode){
+    const m=ui.mode;
+    content=m.kind==='intro'?introView(m):m.kind==='run'?runView(m):resultView(m);
+  }else{
+    content=({home:homeView,games:gamesView,progress:progressView,ach:achView,settings:settingsView})[ui.tab]();
+  }
+  root.replaceChildren(navEl(),h('main',{id:'main'},content));
+}
+
+/* ---------- play flow ---------- */
+function startFlow(ids){
+  if(!ids.length) return;
+  ui.mode={kind:'intro',id:ids[0],queue:ids.slice(1),total:ids.length,idx:1};
+  render(); window.scrollTo(0,0);
+}
+function playOne(id){ui.mode={kind:'intro',id:id,queue:[],total:1,idx:1};render();window.scrollTo(0,0);}
+function exitPlay(){ui.mode=null;render();window.scrollTo(0,0);}
+function introView(m){
+  const g=game(m.id), lv=S.levels[m.id]||1;
+  return h('section',{class:'stage','aria-label':g.name},
+    h('div',{class:'stage-top'},h('div',{class:'title'},m.total>1?'تمرين '+m.idx+' من '+m.total:'تدريب حر'),h('button',{class:'sbtn sm',type:'button',onclick:exitPlay},'خروج')),
+    h('div',{class:'intro'},
+      h('div',{class:'gicon','aria-hidden':'true'},g.icon),
+      h('h1',null,g.name),
+      h('p',null,g.how),
+      g.extra?h('p',null,g.extra):null,
+      h('div',{class:'stage-top'},h('span',{class:'lvl'},'مستواك الحالي: '+lv+' من 10')),
+      h('div',{class:'actions'},h('button',{class:'sbtn main',type:'button',onclick:()=>{ac();ui.mode=Object.assign({},m,{kind:'run'});render();}},'ابدأ'))));
+}
+function makeCtx(level,body,bar){
+  const ctx={level:level,dead:false,timers:new Set(),keys:[],body:body,
+    progress(i,n){bar.style.width=(i/n*100)+'%';},
+    wait(ms){return new Promise(r=>{const id=setTimeout(()=>{ctx.timers.delete(id);r();},ms);ctx.timers.add(id);});},
+    onKey(fn){const f=e=>{if(!ctx.dead)fn(e);};document.addEventListener('keydown',f);ctx.keys.push(f);},
+    stop(){ctx.dead=true;ctx.timers.forEach(clearTimeout);ctx.timers.clear();ctx.keys.forEach(f=>document.removeEventListener('keydown',f));ctx.keys=[];}
+  };
+  return ctx;
+}
+function runView(m){
+  const g=game(m.id), level=S.levels[m.id]||1;
+  const bar=h('i'), body=h('div',{class:'body'});
+  const stage=h('section',{class:'stage','aria-label':g.name},
+    h('div',{class:'stage-top'},h('div',{class:'title'},g.name),h('span',{class:'lvl'},'المستوى '+level),h('button',{class:'sbtn sm',type:'button',onclick:exitPlay},'خروج')),
+    h('div',{class:'pbar'},bar),body);
+  const ctx=makeCtx(level,body,bar); ui.ctx=ctx;
+  const t0=Date.now();
+  Promise.resolve().then(()=>g.fn(ctx)).then(res=>{
+    if(ctx.dead) return;
+    ctx.stop(); ui.ctx=null;
+    const sec=Math.round((Date.now()-t0)/1000);
+    const rec=record(m.id,res.score,sec);
+    ui.mode=Object.assign({},m,{kind:'result',score:res.score,note:res.note||'',rec:rec});
+    render(); window.scrollTo(0,0);
+  }).catch(err=>{
+    console.error(err);
+    if(ctx.dead) return;
+    body.replaceChildren(h('div',{class:'hint'},'حدث خطأ غير متوقع أثناء اللعبة. اضغط «خروج» وحاول مرة أخرى.'));
+  });
+  return stage;
+}
+function resultView(m){
+  const r=m.rec, g=game(m.id), sc=m.score;
+  const stars=sc>=85?3:sc>=65?2:sc>=40?1:0;
+  const lvMsg=r.nl>r.level?'ارتقيت إلى المستوى '+r.nl:(r.nl<r.level?'خفّضنا الصعوبة إلى المستوى '+r.nl+' لتتقدّم بثبات':'تبقى في المستوى '+r.level+'، ونتيجة 80 أو أكثر تنقلك إلى الأعلى');
+  const acts=[];
+  if(m.queue.length){
+    const nx=game(m.queue[0]);
+    acts.push(h('button',{class:'sbtn main',type:'button',onclick:()=>{ui.mode={kind:'intro',id:m.queue[0],queue:m.queue.slice(1),total:m.total,idx:m.idx+1};render();window.scrollTo(0,0);}},'التمرين التالي: '+nx.name));
+  }else{
+    acts.push(h('button',{class:'sbtn main',type:'button',onclick:()=>playOne(m.id)},'العب مرة أخرى'));
+  }
+  acts.push(h('button',{class:'sbtn',type:'button',onclick:exitPlay},'الرئيسية'));
+  return h('section',{class:'stage','aria-label':'النتيجة'},
+    h('div',{class:'result'},
+      h('div',{class:'gicon','aria-hidden':'true'},g.icon),
+      h('h2',null,g.name),
+      h('div',{class:'score'},sc),
+      h('div',{class:'stars','aria-label':stars+' من 3 نجوم'},'★'.repeat(stars)+'☆'.repeat(3-stars)),
+      m.note?h('p',{class:'gain'},m.note):null,
+      h('p',null,lvMsg),
+      h('p',{class:'gain'},'+'+r.xp+' نقطة خبرة'+(r.lvlUp?' — وصلت إلى المستوى '+playerLevel()+' ('+TITLES[Math.min(playerLevel()-1,TITLES.length-1)]+')':'')),
+      r.planDone?h('div',{class:'newach'},'🎉 أنهيت خطة اليوم كاملة (+50 نقطة)'):null,
+      r.newAch.map(a=>h('div',{class:'newach'},a.e+' إنجاز جديد: '+a.t)),
+      h('div',{class:'actions'},acts)));
+}
+
+/* ---------- views ---------- */
+function daysText(n){return n===0?'ابدأ سلسلتك اليوم':n===1?'يوم واحد متتالٍ':n===2?'يومان متتاليان':(n<=10?n+' أيام متتالية':n+' يوماً متتالياً');}
+function homeView(){
+  ensurePlan();
+  const ids=S.plan.ids, remaining=ids.filter(id=>!doneToday(id)), nDone=ids.length-remaining.length;
+  const pl=playerLevel(), hr=new Date().getHours();
+  const greet=hr<12?'صباح الخير':(hr<18?'طاب نهارك':'مساء الخير');
+  const nextId=remaining[0];
+  const sk=skills(S), hasData=SK.some(k=>sk[k]!=null);
+  const list=h('ol',{class:'rail'},ids.map((id,i)=>{
+    const g=game(id), done=doneToday(id);
+    return h('li',{class:'stop'+(done?' done':'')+(id===nextId?' next':'')},
+      h('span',{class:'dot','aria-hidden':'true'},done?'✓':String(i+1)),
+      h('div',null,h('div',{class:'nm'},g.name),h('div',{class:'sk'},g.skills.map(k=>SKN[k]).join('، '))),
+      done?h('span',{class:'tag-done'},'أُنجزت '+todayBest(id)):h('button',{class:'btn ghost sm',type:'button',onclick:()=>playOne(id)},'ابدأ'));
+  }));
+  const cta=remaining.length
+    ?h('button',{class:'btn',type:'button',onclick:()=>startFlow(remaining)},nDone?'أكمل التمرين اليومي':'ابدأ التمرين اليومي')
+    :h('div',null,h('p',{class:'tag-done'},'أحسنت! أنهيت تمرين اليوم.'),h('button',{class:'btn ghost',type:'button',style:{marginTop:'10px'},onclick:()=>{ui.tab='games';render();}},'تدرّب أكثر'));
+  return h('div',null,
+    h('div',{class:'head'},
+      h('div',null,h('h1',null,greet+(S.name?'، '+S.name:'')),
+        h('p',{class:'sub'},new Date().toLocaleDateString('ar-u-nu-latn',{weekday:'long',day:'numeric',month:'long'}))),
+      h('div',{class:'chips-row'},
+        h('span',{class:'pill'},'🔥 ',h('b',null,daysText(curStreak()))),
+        h('span',{class:'pill'},'المستوى ',h('b',null,pl),' — '+TITLES[Math.min(pl-1,TITLES.length-1)],h('span',{class:'xp','aria-hidden':'true'},h('i',{style:{width:Math.round(xpBar()*100)+'%'}}))))),
+    h('div',{class:'split'},
+      h('section',{class:'panel'},
+        h('h2',null,'تمرين اليوم'),
+        h('p',{class:'sub'},nDone+' من '+ids.length+' مكتملة، والوقت المتوقع نحو 15 دقيقة. تميل الخطة إلى المهارات التي تحتاج تدريباً أكثر.'),
+        list,cta),
+      h('section',{class:'panel'},
+        h('h2',null,'قدراتك'),
+        hasData?h('div',{class:'radar-wrap',html:null}):h('p',{class:'sub'},'أنجز أول لعبة لتظهر هنا خريطة قدراتك الخمس، وتتحدّث بعد كل لعبة.'),
+        null)));
+}
+function radarEl(){const d=h('div',{class:'radar-wrap'});d.innerHTML=radar(skills(S));return d;}
+
+function gamesView(){
+  return h('div',null,
+    h('div',{class:'head'},h('div',null,h('h1',null,'الألعاب'),h('p',{class:'sub'},'الصعوبة تتكيّف تلقائياً مع أدائك في كل لعبة.'))),
+    h('div',{class:'ggrid'},GAMES.map(g=>{
+      const lv=S.levels[g.id]||1;
+      return h('article',{class:'gcard'},
+        h('div',{class:'gicon','aria-hidden':'true'},g.icon),
+        h('h3',null,g.name),
+        h('p',{class:'sub'},g.desc),
+        h('div',{class:'skills'},g.skills.map(k=>h('span',null,SKN[k]))),
+        h('div',{class:'meter','aria-label':'المستوى '+lv+' من 10'},Array.from({length:10},(_,i)=>h('i',{class:i<lv?'on':''}))),
+        h('div',{class:'gfoot'},h('span',{class:'sub'},S.best[g.id]!=null?'أفضل نتيجة: '+S.best[g.id]:'لم تُلعب بعد'),h('button',{class:'btn sm',type:'button',onclick:()=>playOne(g.id)},'العب')));
+    })));
+}
+
+function progressView(){
+  const today=dayStr();
+  const sessions=S.history.length, mins=Math.round(S.minutes||0);
+  const sk=skills(S), hasData=SK.some(k=>sk[k]!=null);
+  const pts=[];
+  for(let i=13;i>=0;i--){
+    const d=addDays(today,-i), rows=S.history.filter(x=>x.day===d);
+    pts.push({l:String(Number(d.slice(8))),v:rows.length?Math.round(rows.reduce((a,b)=>a+b.score,0)/rows.length):null});
+  }
+  const hasLine=pts.some(p=>p.v!=null);
+  const lineDiv=h('div');lineDiv.innerHTML=hasLine?lineChart(pts):'';
+  const act=h('div',{class:'act'});
+  for(let i=27;i>=0;i--){
+    const d=addDays(today,-i), c=S.history.filter(x=>x.day===d).length;
+    act.append(h('span',{class:c>=6?'a3':c>=3?'a2':c>=1?'a1':'',title:d+' — '+c+' ألعاب'}));
+  }
+  const known=SK.filter(k=>sk[k]!=null).sort((a,b)=>sk[b]-sk[a]);
+  const insight=known.length>=2?'أقوى مهاراتك حالياً: '+SKN[known[0]]+'. أكثر مهارة تحتاج تدريباً: '+SKN[known[known.length-1]]+'، وستجد الخطة اليومية تركّز عليها.':'العب المزيد من الألعاب المتنوعة لنقارن بين مهاراتك.';
+  return h('div',null,
+    h('div',{class:'head'},h('div',null,h('h1',null,'تقدّمك'))),
+    h('div',{class:'tiles'},
+      h('div',{class:'tile'},h('b',null,sessions),h('span',null,'لعبة مكتملة')),
+      h('div',{class:'tile'},h('b',null,mins),h('span',null,'دقيقة تدريب')),
+      h('div',{class:'tile'},h('b',null,S.bestStreak||0),h('span',null,'أطول سلسلة أيام')),
+      h('div',{class:'tile'},h('b',null,S.xp),h('span',null,'نقطة خبرة'))),
+    h('div',{class:'split'},
+      h('section',{class:'panel'},h('h2',null,'المهارات'),
+        hasData?h('div',{class:'bars'},SK.map(k=>h('div',{class:'bar-row'},h('span',null,SKN[k]),h('div',{class:'track'},h('i',{style:{width:Math.round(sk[k]||0)+'%'}})),h('span',null,sk[k]==null?'—':Math.round(sk[k]))))):h('p',{class:'sub'},'لا توجد بيانات بعد.'),
+        h('p',{class:'sub',style:{marginTop:'14px'}},insight)),
+      h('section',{class:'panel'},h('h2',null,'متوسط نتائجك اليومية'),
+        h('p',{class:'sub'},'آخر 14 يوماً'),
+        hasLine?lineDiv:h('p',{class:'sub',style:{marginTop:'10px'}},'سيظهر الرسم بعد أن تلعب أول مرة.'))),
+    h('section',{class:'panel',style:{marginTop:'22px'}},h('h2',null,'أيام التدريب'),h('p',{class:'sub'},'آخر 28 يوماً، والأغمق يعني ألعاباً أكثر'),act),
+    h('section',{class:'panel',style:{marginTop:'22px'}},h('h2',null,'كل لعبة'),
+      GAMES.map(g=>{
+        const last=S.history.filter(x=>x.id===g.id).slice(-5), avg=last.length?Math.round(last.reduce((a,b)=>a+b.score,0)/last.length):null;
+        return h('div',{class:'grow'},
+          h('div',null,h('div',{class:'nm',style:{fontWeight:'600'}},g.icon+' '+g.name),h('div',{class:'sub'},(S.plays[g.id]||0)+' مرة، المستوى '+(S.levels[g.id]||1))),
+          h('span',{class:'sub'},'أفضل: '+(S.best[g.id]!=null?S.best[g.id]:'—')),
+          h('span',{class:'sub'},'آخر 5: '+(avg!=null?avg:'—')));
+      })));
+}
+
+function achView(){
+  const got=ACH.filter(a=>S.ach[a.id]).length;
+  return h('div',null,
+    h('div',{class:'head'},h('div',null,h('h1',null,'الإنجازات'),h('p',{class:'sub'},got+' من '+ACH.length))),
+    h('div',{class:'badges'},ACH.map(a=>{
+      const on=!!S.ach[a.id];
+      return h('div',{class:'badge'+(on?'':' locked')},h('div',{class:'bi','aria-hidden':'true'},on?a.e:'🔒'),h('div',null,h('b',null,a.t),h('small',null,a.d)));
+    })));
+}
+
+function settingsView(){
+  const nameI=h('input',{class:'inp',id:'nm',type:'text',maxlength:'30',value:S.name,placeholder:'اسمك'});
+  nameI.addEventListener('change',()=>{S.name=nameI.value.trim();save();toast('تم حفظ الاسم');});
+  const seg=(items,cur,fn)=>{
+    const d=h('div',{class:'seg',role:'group'});
+    items.forEach(it=>{const b=h('button',{type:'button','aria-pressed':String(cur===it[0])},it[1]);b.addEventListener('click',()=>{fn(it[0]);});d.append(b);});
+    return d;
+  };
+  const ta=h('textarea',{class:'ta',rows:'5','aria-label':'نص النسخة الاحتياطية',placeholder:'ألصق هنا نسخة احتياطية للاستيراد'});
+  let confirmT=null;
+  const resetBtn=h('button',{class:'btn ghost sm',type:'button'},'حذف كل البيانات');
+  resetBtn.addEventListener('click',()=>{
+    if(!confirmT){
+      resetBtn.textContent='اضغط مرة أخرى للتأكيد'; resetBtn.classList.add('danger');
+      confirmT=setTimeout(()=>{confirmT=null;resetBtn.textContent='حذف كل البيانات';resetBtn.classList.remove('danger');},4000);
+    }else{
+      clearTimeout(confirmT); S=fresh(); save(); applyTheme(); toast('تم حذف البيانات'); ui.tab='home'; render();
+    }
+  });
+  return h('div',null,
+    h('div',{class:'head'},h('div',null,h('h1',null,'الإعدادات'))),
+    h('div',{class:'field'},h('label',{for:'nm'},'الاسم'),nameI),
+    h('div',{class:'field'},h('span',{class:'lb'},'المظهر'),
+      seg([['auto','تلقائي'],['light','فاتح'],['dark','داكن']],S.theme,v=>{S.theme=v;save();applyTheme();render();})),
+    h('div',{class:'field'},h('span',{class:'lb'},'المؤثرات الصوتية'),
+      seg([[true,'مفعّلة'],[false,'صامتة']],S.sound,v=>{S.sound=v;save();render();})),
+    h('div',{class:'field'},h('span',{class:'lb'},'نسخة احتياطية'),
+      h('p',{class:'sub'},'بياناتك محفوظة على هذا الجهاز فقط. انسخ النص واحتفظ به لتنقل تقدّمك إلى جهاز آخر.'),
+      ta,
+      h('div',{class:'chips-row'},
+        h('button',{class:'btn ghost sm',type:'button',onclick:()=>{
+          ta.value=JSON.stringify(S); ta.select();
+          try{navigator.clipboard.writeText(ta.value).then(()=>toast('تم نسخ البيانات'),()=>toast('حدّد النص وانسخه يدوياً'));}catch(e){toast('حدّد النص وانسخه يدوياً');}
+        }},'نسخ البيانات'),
+        h('button',{class:'btn ghost sm',type:'button',onclick:()=>{
+          try{
+            const o=JSON.parse(ta.value);
+            if(!o||typeof o!=='object'||!Array.isArray(o.history)) throw new Error('bad');
+            S=Object.assign(fresh(),o); save(); applyTheme(); toast('تم استيراد البيانات'); render();
+          }catch(e){toast('النص غير صالح');}
+        }},'استيراد'),
+        resetBtn)),
+    h('p',{class:'note'},'مِران تطبيق مستقل للتدريب الذهني. أثر ألعاب تدريب الدماغ على المهارات اليومية ما زال محل نقاش علمي، فاعتبرها تمريناً ممتعاً وعادة يومية، وليست علاجاً أو تشخيصاً.'));
+}
+
+/* ---------- boot ---------- */
+applyTheme();
+render();
+})();
+</script>
+</body>
+</html>
