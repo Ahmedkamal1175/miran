@@ -1,0 +1,15 @@
+{
+  "name": "miran",
+  "version": "1.0.0",
+  "description": "مِران — تطبيق تدريب العقل",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Ahmedkamal1175",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-packager": "^17.1.2"
+  }
+}
